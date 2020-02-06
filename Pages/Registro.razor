@@ -1,0 +1,157 @@
+﻿@page "/Registro/Id"
+@inject NavigationManager Navegador
+
+<h3>Registro</h3>
+
+<EditForm Model="articulos" OnValidSubmit="Guardar">
+    <DataAnnotationsValidator />
+
+    <div class="form-group">
+        <label for="IdInput">ArticuloId</label>
+        <InputNumber Id="IdInput" @bind-Value="articulos.ArticuloId" class="form-control"></InputNumber>
+        <button type="button" class="btn btn-outline-primary mt-2" @onclick="Buscar">Buscar</button>
+
+    </div>
+
+    <div class="form-group">
+        <label for="FechaInput">Fecha</label>
+        <InputDate Id="FechaInput" @bind-Value="articulos.Fecha" class="form-control"></InputDate>
+    </div>
+
+    <div class="form-group">
+        <label for="DescripcionInput">Descripcion</label>
+        <InputText Id="DescripcionInput" @bind-Value="articulos.Descripcion" class="form-control"></InputText>
+    </div>
+
+    <div class="form-group">
+        <label for="CostoInput">Costo</label>
+        <InputNumber Id="CostoInput" @bind-Value="articulos.Costo" @oninput="Calcular" @onfocusin="Calcular" @onfocusout="Calcular" class="form-control"></InputNumber>
+    </div>
+
+    <div class="form-group">
+        <label for="GananciasInput">Ganancia</label>
+        <InputNumber Id="GananciasInput" @bind-Value="articulos.Ganancia" @oninput="Calcular" @onfocusin="Calcular" @onfocusout="Calcular" class="form-control"></InputNumber>
+    </div>
+
+    <div class="form-group">
+        <label for="PrecioInput">Precio</label>
+        <InputNumber Id="PrecioInput" @bind-Value="articulos.Precio" class="form-control" ReadOnly="true"></InputNumber>
+    </div>
+  
+    <ValidationSummary />
+
+
+    <div>
+        <button class="btn btn-outline-secondary" type="button" @onclick="Limpiar">Limpiar</button>
+        <button class="btn btn-outline-success" type="submit">Guardar</button>
+        <button class="btn btn-outline-danger" type="button" @onclick="Eliminar">Eliminar</button>
+    </div>
+
+</EditForm>
+
+    @code {
+        Articulos articulos = new Articulos();
+        protected override void OnInitialized()
+        {
+            articulos = new Articulos();
+        }
+
+        private void Calcular()
+        {
+            if (articulos.Costo >= 0 && articulos.Ganancia >= 0)
+            {
+                articulos.Precio = (articulos.Costo * (articulos.Ganancia / 100))+articulos.Costo;
+            }
+
+        }
+
+        private void Guardar()
+        {
+            ArticuloController db = new ArticuloController();
+
+            try
+            {
+                if (articulos.ArticuloId <= 0)
+                {
+                    if (db.Guardar(articulos))
+                    {
+                        articulos = new Articulos();
+                    }
+                    else
+                    {
+                    }
+                }
+                else
+                {
+                    if (db.Modificar(articulos))
+                    {
+                        articulos = new Articulos();
+                    }
+                    else
+                    {
+                    }
+                }
+            }
+            catch (Exception)
+            {
+
+            }
+
+        }
+
+        private void Limpiar()
+        {
+            articulos = new Articulos();
+        }
+
+        private void Eliminar()
+        {
+            ArticuloController db = new ArticuloController();
+
+            try
+            {
+                if (articulos.ArticuloId > 0)
+                {
+                    if (db.Eliminar(articulos.ArticuloId))
+                    {
+                        articulos = new Articulos();
+                    }
+                    else
+                    {
+                    }
+                }
+            }
+            catch (Exception)
+            {
+
+            }
+        }
+
+        private void Buscar()
+        {
+            ArticuloController db = new ArticuloController();
+            Articulos articuloTemp;
+
+            try
+            {
+                if (articulos.ArticuloId > 0)
+                {
+                    articuloTemp = db.Buscar(articulos.ArticuloId);
+
+                    if (articuloTemp != null)
+                    {
+                        articulos = articuloTemp;
+                    }
+                    else
+                    {
+                    }
+
+                }
+            }
+            catch (Exception)
+            {
+
+            }
+        }
+
+    }
