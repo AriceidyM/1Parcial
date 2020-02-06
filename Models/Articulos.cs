@@ -8,7 +8,7 @@ namespace Parcial.Models
 {
     public class Articulos
     {
-        [Key]
+        [Key] 
         public int ArticuloId { get; set; }
         [Required(ErrorMessage = "Se necesita colocar una fecha")]
         [Range(typeof(DateTime), minimum: "1/1/1980", maximum: "1/1/2025", ErrorMessage = "La fecha esta mal")]
